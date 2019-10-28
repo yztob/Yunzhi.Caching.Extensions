@@ -9,7 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="LiteDB" Version="4.1.4" />
-    <PackageReference Include="Yunzhi.Library" Version="3.0.7179" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Yunzhi.Library" Version="3.0.7240" />
   </ItemGroup>
 
 </Project>

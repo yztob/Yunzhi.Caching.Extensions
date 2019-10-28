@@ -5,6 +5,7 @@ using System.Text;
 using Yunzhi.Common;
 using Yunzhi.Caching;
 using Yunzhi.Caching.Configuration;
+using Newtonsoft.Json;
 using LiteDB;
 
 /*
@@ -25,6 +26,7 @@ namespace Yunzhi.Caching.LiteDB
         private string _liteDbPath = "lite_cache.db";
         private LiteDatabase _db = null;
         private LiteCollection<LiteCacheItem> _collection = null;
+        private long _lastClean = 0;
         #endregion
 
         #region 公共属性
@@ -42,23 +44,27 @@ namespace Yunzhi.Caching.LiteDB
         /// <summary>
         /// 初始化提供程序
         /// </summary>
-        public LiteDbProvider()
+        /// <param name="key">缓存实例键</param>
+        public LiteDbProvider(string key)
         {
+            this.Key = key;
             this.InitLiteDb();
         }
 
         /// <summary>
         /// 使用缓存配置，初始化提供程序
         /// </summary>
+        /// <param name="key">缓存实例键</param>
         /// <param name="config">配置实例</param>
-        public LiteDbProvider(PoolElement config)
+        public LiteDbProvider(string key, CacheInstanceElement config)
         {
+            this.Key = key;
             if (config != null)
-                return;
-
-            var path = config.Parameters?.GetValue("path");
-            if (!string.IsNullOrWhiteSpace(path))
-                _liteDbPath = path;
+            {
+                var path = config.Parameters?.GetValue("path");
+                if (!string.IsNullOrWhiteSpace(path))
+                    _liteDbPath = path;
+            }
 
             this.InitLiteDb();
         }
@@ -72,27 +78,13 @@ namespace Yunzhi.Caching.LiteDB
         {
             _db = new LiteDatabase(_liteDbPath);
             _collection = _db.GetCollection<LiteCacheItem>(this.Key);
+
+            //进行一次清理
+            this.Clean();
         }
         #endregion
 
         #region 公共方法
-        /// <summary>
-        /// 清除当前缓存队列中的所有缓存项
-        /// </summary>
-        public void Clean()
-        {
-            _db.DropCollection(this.Key);
-        }
-
-        /// <summary>
-        /// 获取当前缓存队列中有多少缓存项
-        /// </summary>
-        /// <returns></returns>
-        public long Count()
-        {
-            return _collection.Count();
-        }
-
         /// <summary>
         /// 获取<paramref name="key"/>指示的键是否已经在当前缓存队列中存在
         /// </summary>
@@ -107,24 +99,59 @@ namespace Yunzhi.Caching.LiteDB
         }
 
         /// <summary>
-        /// 
+        /// 获取指定键缓存值
         /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public object Get(string key)
+        /// <param name="key">缓存项键</param>
+        /// <typeparam name="T">缓存的 值类型</typeparam>
+        /// <returns>存在返回值，否则返回<typeparamref name="T"/>的默认类型。</returns>
+        public T Get<T>(string key)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
 
-            throw new NotImplementedException();
+            if (Saber.Timestamp() - _lastClean > 60 * 30)
+                this.Clean();
+
+            var item = _collection.FindById(key);
+            if (item == null || item.ExpiredTime < DateTime.Now)
+                return default(T);
+
+            //自动延展过期时间
+            if (item.Extended && item.Expired.HasValue)
+            {
+                item.Expired = item.Expired.Value;
+                _collection.Update(item);
+            }
+
+            return JsonConvert.DeserializeObject<T>(item.Value);
         }
 
-        public void Set(string key, object value, TimeSpan? expired = null, bool extended = false)
+        /// <summary>
+        /// 设定指定键缓存值
+        /// </summary>
+        /// <param name="key">缓存项键</param>
+        /// <param name="value">缓存项值</param>
+        /// <param name="expired">缓存项过期时长，null按默认过期时间处理，TimeSpan.Zero则最永久有效</param>
+        /// <param name="extended">表示每次访问后是否将缓存顺延相应的时间。</param>
+        /// <typeparam name="T">缓存的 值类型</typeparam>
+        /// <remarks>如果缓存存在更新缓存值，否则创建一个新的缓存</remarks>
+        public void Set<T>(string key, T value, TimeSpan? expired = null, bool extended = false)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
 
-            throw new NotImplementedException();
+            var item = new LiteCacheItem()
+            {
+                Key = key,
+                Value = JsonConvert.SerializeObject(value),
+                Expired = expired,
+                Extended = true
+            };
+
+            if (_collection.Exists(x => x.Key == key))
+                _collection.Update(item);
+            else
+                _collection.Insert(item);
         }
 
         /// <summary>
@@ -136,8 +163,30 @@ namespace Yunzhi.Caching.LiteDB
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
 
+            if (Saber.Timestamp() - _lastClean > 60 * 30)
+                this.Clean();
+
             _collection.Delete(key);
         }
+
+        /// <summary>
+        /// 清理掉实例内已经过期的缓存
+        /// </summary>
+        public void Clean()
+        {
+            _collection.Delete(x => x.ExpiredTime < DateTime.Now);
+            _lastClean = Saber.Timestamp();
+        }
+
+        /// <summary>
+        /// 获取当前缓存队列中有多少缓存项
+        /// </summary>
+        /// <returns></returns>
+        public long Count()
+        {
+            return _collection.Count();
+        }
+
         #endregion
     }
 }
