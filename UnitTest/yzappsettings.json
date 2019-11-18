@@ -16,10 +16,12 @@
         {
           "key": "lite_cache",
           "provider": "Yunzhi.Caching.LiteDB.LiteDbProvider, Yunzhi.Caching.LiteDB",
-          "parameters": {
-            "key": "path",
-            "value": "cache.db"
-          }
+          "parameters": [
+            {
+              "key": "path",
+              "value": "li_cache.db"
+            }
+          ]
         }
       ]
     },
