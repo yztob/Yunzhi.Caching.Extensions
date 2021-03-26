@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Yunzhi.Caching.Extensions</id>
+    <version>$version$</version>
+    <title>一个基于LiteDB的数据缓存（共享）提供程序</title>
+    <authors>Yztob</authors>
+    <owners>Ganzhou Yunzhi Technology Co.,Ltd.</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>http://www.yztob.com/</licenseUrl>
+    <projectUrl>http://www.yztob.com/</projectUrl>
+    <iconUrl>https://avatars3.githubusercontent.com/u/3411858?v=3&amp;u=41f68dc3432ffd022b6e355cd50c31c672848ff4&amp;s=400</iconUrl>
+    <description>一个基于LitDB作为持久化容器的Yunzhi.Library.Caching缓存提供程序。可同一主机跨进程进行数据缓存（共享）。</description>
+    <summary>一个基于LitDB作为持久化容器的Yunzhi.Library.Caching缓存提供程序。可同一主机跨进程进行数据缓存（共享）。</summary>
+    <releaseNotes>$notes$</releaseNotes>
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="LiteDB" version="4.1.4" exclude="Build,Analyzers" />
+        <dependency id="Newtonsoft.Json" version="12.0.2" exclude="Build,Analyzers" />
+        <dependency id="Yunzhi.Library" version="3.0.7240" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\bin\release\netstandard2.0\Yunzhi.Caching.Extensions.dll" target="lib\netstandard2.0\Yunzhi.Caching.Extensions.dll" />
+  </files>
+</package>

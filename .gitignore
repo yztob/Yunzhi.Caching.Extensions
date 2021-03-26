@@ -328,4 +328,4 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
-/Yunzhi.Caching.LiteDB/nuget/build-package.ps1
+/Yunzhi.Caching.Extensions/nuget/build-package.ps1

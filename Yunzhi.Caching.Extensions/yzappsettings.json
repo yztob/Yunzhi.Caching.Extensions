@@ -1,0 +1,29 @@
+﻿{
+    "yunzhi": {
+        "cache": {
+            "defaultProvider": "Yunzhi.Caching.MemoryProvider, Yunzhi.Library",
+            "parameters": [
+                {
+                    "key": "timeout",
+                    "value": "1"
+                },
+                {
+                    "key": "trymax",
+                    "value": "20"
+                }
+            ],
+            "pool": [
+                {
+                    "key": "lite_cache",
+                    "provider": "Yunzhi.Caching.Extensions.LiteDb.LiteDbProvider, Yunzhi.Caching.Extensions",
+                    "parameters": [
+                        {
+                            "key": "path",
+                            "value": "li_cache.db"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
