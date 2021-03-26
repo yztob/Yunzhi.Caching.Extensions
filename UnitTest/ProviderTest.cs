@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Yunzhi.Common;
 using Yunzhi.Caching;
 using Yunzhi.Logging;
-using Yunzhi.Caching.LiteDB;
+using Yunzhi.Caching.Extensions.LiteDb;
 using UnitTest.Models;
 
 /*
