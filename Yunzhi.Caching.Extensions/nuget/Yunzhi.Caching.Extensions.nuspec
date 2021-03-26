@@ -3,15 +3,19 @@
   <metadata>
     <id>Yunzhi.Caching.Extensions</id>
     <version>$version$</version>
-    <title>一个基于LiteDB的数据缓存（共享）提供程序</title>
+    <title>Yunzhi.Caching的扩展包，提供LiteDb、MongoDb的缓存提供程序</title>
     <authors>Yztob</authors>
     <owners>Ganzhou Yunzhi Technology Co.,Ltd.</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>http://www.yztob.com/</licenseUrl>
     <projectUrl>http://www.yztob.com/</projectUrl>
     <iconUrl>https://avatars3.githubusercontent.com/u/3411858?v=3&amp;u=41f68dc3432ffd022b6e355cd50c31c672848ff4&amp;s=400</iconUrl>
-    <description>一个基于LitDB作为持久化容器的Yunzhi.Library.Caching缓存提供程序。可同一主机跨进程进行数据缓存（共享）。</description>
-    <summary>一个基于LitDB作为持久化容器的Yunzhi.Library.Caching缓存提供程序。可同一主机跨进程进行数据缓存（共享）。</summary>
+    <description>
+      云智科技基础类库Yunzhi.Caching的扩展包，提供LiteDb、MongoDb的缓存提供程序。LiteDb提供基于LiteDB的缓存提供程序，提供同一主机跨进程的数据缓存及共享能力；MongoDB提供集群式的共享能力。
+    </description>
+    <summary>
+      云智科技基础类库Yunzhi.Caching的扩展包，提供LiteDb、MongoDb的缓存提供程序。LiteDb提供基于LiteDB的缓存提供程序，提供同一主机跨进程的数据缓存及共享能力；MongoDB提供集群式的共享能力。
+    </summary>
     <releaseNotes>$notes$</releaseNotes>
     <dependencies>
       <group targetFramework=".NETStandard2.0">

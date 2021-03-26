@@ -16,7 +16,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="Yunzhi.Library" Version="3.0.7240" />
+    <PackageReference Include="Yunzhi.Library" Version="3.1.7742" />
   </ItemGroup>
 
   <ItemGroup>

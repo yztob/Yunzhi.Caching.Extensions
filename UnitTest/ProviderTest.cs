@@ -51,6 +51,7 @@ namespace UnitTest
             var objVal = session.Get<User>("user");
             Assert.AreEqual(obj.Id, objVal.Id);
 
+            //Lite
             var cache = CachePool.Instance["lite_cache"];
             var nval = cache.Get<int>("decimal");
             Assert.AreEqual(nval, 0);
@@ -67,9 +68,29 @@ namespace UnitTest
             var user = cache.Get<User>("user");
             Assert.AreEqual(user.Id, obj.Id);
 
+            //System.Threading.Thread.Sleep(6000);
+            cache.Provider.Clean();
+
+            //MongoDb
+            cache = CachePool.Instance["mongo_cache"];
+            dec = cache.Get<decimal>("decimal");
+            Assert.AreEqual(dec, 0);
+
+            cache.Set<string>("text", text);
+            cache.Set<int>("number", num);
+            cache.Set<decimal>("decimal", dec, 5);
+            cache.Set<bool>("flag", flag);
+            cache.Set<User>("user", obj);
+
+            val = cache.Get<string>("text");
+            Assert.AreEqual(val, text);
+
+            user = cache.Get<User>("user");
+            Assert.AreEqual(user.Id, obj.Id);
+
             System.Threading.Thread.Sleep(6000);
             cache.Provider.Clean();
-            
+
         }
     }
 }

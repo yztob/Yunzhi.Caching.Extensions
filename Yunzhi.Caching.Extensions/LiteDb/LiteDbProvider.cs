@@ -20,6 +20,9 @@ namespace Yunzhi.Caching.Extensions.LiteDb
     /// <summary>
     /// 基于LiteDb缓存提供程序
     /// </summary>
+    /// <remarks>
+    /// path lite_db数据文件存放路径
+    /// </remarks>
     public class LiteDbProvider : ICacheProvider
     {
         #region 私有成员

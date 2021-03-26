@@ -1,27 +1,28 @@
 ﻿{
+    "connectionStrings": {
+        "cache_mongodb": "mongodb://192.168.5.11/demo_cache"
+    },
     "yunzhi": {
         "cache": {
             "defaultProvider": "Yunzhi.Caching.MemoryProvider, Yunzhi.Library",
-            "parameters": [
-                {
-                    "key": "timeout",
-                    "value": "1"
-                },
-                {
-                    "key": "trymax",
-                    "value": "20"
-                }
-            ],
+            "parameters": {
+                "timeout": 1,
+                "tryMax": 20
+            },
             "pool": [
                 {
                     "key": "lite_cache",
                     "provider": "Yunzhi.Caching.Extensions.LiteDb.LiteDbProvider, Yunzhi.Caching.Extensions",
-                    "parameters": [
-                        {
-                            "key": "path",
-                            "value": "li_cache.db"
-                        }
-                    ]
+                    "parameters": {
+                        "path": "lite_cache.db"
+                    }
+                },
+                {
+                    "key": "mongo_cache",
+                    "provider": "Yunzhi.Caching.Extensions.MongoDb.MongoDbProvider, Yunzhi.Caching.Extensions",
+                    "parameters": {
+                        "mongodb": "{cache_mongodb}"
+                    }
                 }
             ]
         }
