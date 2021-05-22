@@ -92,5 +92,15 @@ namespace UnitTest
             cache.Provider.Clean();
 
         }
+
+        [TestMethod]
+        public void ClearTest()
+        {
+            var cache = CachePool.Instance.Default;
+            var val = cache.Get<string>("DAAA10B199C6FC943B14B253A2CEC994");
+            System.Threading.Thread.Sleep(500);
+            cache.Set<string>("temp", "test");
+            Console.WriteLine(val);
+        }
     }
 }

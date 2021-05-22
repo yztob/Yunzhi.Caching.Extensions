@@ -17,6 +17,7 @@ using MongoDB.Bson.Serialization;
  *       
  * @Alphaair
  * 20200211 create.
+ * 20210522 优化过期清理逻辑。
 **/
 
 namespace Yunzhi.Caching.Extensions.MongoDb
@@ -78,6 +79,8 @@ namespace Yunzhi.Caching.Extensions.MongoDb
             _cleanInterval *= 60;
 
             _access = new MongoDbAccess(connstr);
+
+            this.CleanAsync();
         }
 
         /// <summary>
@@ -99,6 +102,8 @@ namespace Yunzhi.Caching.Extensions.MongoDb
                 throw new Exception("请在缓存池中配置mongodb参数。");
 
             _access = new MongoDbAccess(connstr);
+
+            this.CleanAsync();
         }
         #endregion
 
@@ -123,6 +128,15 @@ namespace Yunzhi.Caching.Extensions.MongoDb
             _lastClean = Saber.Timestamp();
         }
 
+        /// <summary>
+        /// 异步方式清理过期数据，只有间隔到才会触发
+        /// </summary>
+        public void CleanAsync()
+        {
+            if (Saber.Timestamp() - _lastClean >= _cleanInterval)
+                Task.Run(this.Clean);
+        }
+
         /// <inheritdoc/>
         public long Count()
         {
@@ -144,6 +158,8 @@ namespace Yunzhi.Caching.Extensions.MongoDb
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
 
+            this.CleanAsync();
+
             var coll = this.GetCollection<T>();
             var item = coll.Get(x => x.Key == key, false);
             if (item == null || item.ExpiredTime < DateTime.Now)
@@ -158,10 +174,6 @@ namespace Yunzhi.Caching.Extensions.MongoDb
                 item.SetExpired(item.Expired);
                 coll.Update(item, x => x.Key == key);
             }
-
-            //触发一次清理
-            if (Saber.Timestamp() - _lastClean >= _cleanInterval)
-                Task.Run(this.Clean);
 
             return item.Value;
         }
@@ -182,6 +194,7 @@ namespace Yunzhi.Caching.Extensions.MongoDb
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
 
+            this.CleanAsync();
             var item = new CacheItem<T>(key)
             {
                 Value = value,

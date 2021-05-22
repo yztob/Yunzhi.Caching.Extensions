@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 using Yunzhi.Common;
 using Yunzhi.Caching;
@@ -13,6 +14,7 @@ using LiteDB;
  *       
  * @Alphaair
  * 20191027 create.
+ * 20210522 优化过期清理逻辑。
 **/
 
 namespace Yunzhi.Caching.Extensions.LiteDb
@@ -113,9 +115,7 @@ namespace Yunzhi.Caching.Extensions.LiteDb
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
 
-            if (Saber.Timestamp() - _lastClean > 60 * 30)
-                this.Clean();
-
+            this.CleanAsync();
             var item = _collection.FindById(key);
             if (item == null || item.ExpiredTime < DateTime.Now)
                 return default(T);
@@ -144,6 +144,7 @@ namespace Yunzhi.Caching.Extensions.LiteDb
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
 
+            this.CleanAsync();
             var item = new LiteCacheItem()
             {
                 Key = key,
@@ -167,10 +168,8 @@ namespace Yunzhi.Caching.Extensions.LiteDb
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
 
-            if (Saber.Timestamp() - _lastClean > 60 * 30)
-                this.Clean();
-
             _collection.Delete(key);
+            this.CleanAsync();
         }
 
         /// <summary>
@@ -180,6 +179,15 @@ namespace Yunzhi.Caching.Extensions.LiteDb
         {
             _collection.DeleteMany(x => x.ExpiredTime < DateTime.Now);
             _lastClean = Saber.Timestamp();
+        }
+
+        /// <summary>
+        /// 异步方式清理过期数据，只有间隔到才会触发
+        /// </summary>
+        public void CleanAsync()
+        {
+            if (Saber.Timestamp() - _lastClean >= 60 * 10)
+                Task.Run(this.Clean);
         }
 
         /// <summary>

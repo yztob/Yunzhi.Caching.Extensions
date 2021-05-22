@@ -17,7 +17,7 @@ using System.Reflection;
 [assembly: AssemblyDescriptionAttribute("一个基于LiteDB的数据缓存提供程序，可以同一主机内跨进程共享数据。")]
 [assembly: AssemblyCopyright("© 赣州云智科技有限责任公司 2019-2021")]
 [assembly: AssemblyVersionAttribute("1.0.*")]
-[assembly: AssemblyInformationalVersionAttribute("beta1")]
+[assembly: AssemblyInformationalVersionAttribute("beta2")]
 
 // 由 MSBuild WriteCodeFragment 类生成。
 

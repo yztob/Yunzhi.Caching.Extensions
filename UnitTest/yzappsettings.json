@@ -1,13 +1,12 @@
 ﻿{
     "connectionStrings": {
-        "cache_mongodb": "mongodb://192.168.5.11/demo_cache"
+        "cache_mongodb": "mongodb://192.168.5.11/yztob_saas_cache"
     },
     "yunzhi": {
         "cache": {
-            "defaultProvider": "Yunzhi.Caching.MemoryProvider, Yunzhi.Library",
+            "defaultProvider": "Yunzhi.Caching.Extensions.MongoDb.MongoDbProvider, Yunzhi.Caching.Extensions",
             "parameters": {
-                "timeout": 1,
-                "tryMax": 20
+                "mongodb": "{cache_mongodb}"
             },
             "pool": [
                 {
