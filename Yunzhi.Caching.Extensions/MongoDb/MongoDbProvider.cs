@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 using Yunzhi.Common;
+using Yunzhi.Database;
 using Yunzhi.NoSql;
 using Yunzhi.Configuration;
 using Yunzhi.Caching.Configuration;
@@ -18,6 +19,7 @@ using MongoDB.Bson.Serialization;
  * @Alphaair
  * 20200211 create.
  * 20210522 优化过期清理逻辑。
+ * 20251105 增加Find方法。
 **/
 
 namespace Yunzhi.Caching.Extensions.MongoDb
@@ -51,9 +53,11 @@ namespace Yunzhi.Caching.Extensions.MongoDb
         /// </summary>
         static MongoDbProvider()
         {
-            BsonClassMap.RegisterClassMap<CacheItem>(map => {
+            BsonClassMap.RegisterClassMap<CacheItem>(map =>
+            {
                 map.AutoMap();
                 map.MapIdMember(x => x.Key);
+                map.MapProperty(x => x.ExpiredTime).SetLocalDateTimeSerializer();
                 map.SetIgnoreExtraElements(true);
             });
         }
@@ -73,7 +77,7 @@ namespace Yunzhi.Caching.Extensions.MongoDb
             var connstr = config.Parameters.GetValue<string>("mongodb");
             if (string.IsNullOrWhiteSpace(connstr))
                 throw new Exception("请在缓存池中配置mongodb参数。");
-            
+
             _cleanInterval = config.Parameters.GetValue<int>("cleanInterval", 10);
             _cleanInterval = Math.Max(_cleanInterval, 3);
             _cleanInterval *= 60;
@@ -207,6 +211,21 @@ namespace Yunzhi.Caching.Extensions.MongoDb
                 coll.Update(item, x => x.Key == key);
             else
                 coll.Insert(item);
+        }
+
+        /// <summary>
+        /// 查找缓存条目
+        /// </summary>
+        /// <typeparam name="T">缓存值类型</typeparam>
+        /// <param name="filter">过滤条件</param>
+        /// <param name="page">分页设定及结果，为空不分页</param>
+        /// <returns></returns>
+        public IList<CacheItem<T>> Find<T>(Expression<Func<CacheItem<T>, bool>> filter, Paged page)
+        {
+            var collection = this.GetCollection<T>();
+            var items = collection.Collection.Find(filter).Pageing(page);
+
+            return items;
         }
         #endregion
     }

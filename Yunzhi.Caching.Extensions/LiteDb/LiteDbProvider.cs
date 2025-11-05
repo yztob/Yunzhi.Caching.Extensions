@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 using Yunzhi.Common;
 using Yunzhi.Caching;
@@ -15,6 +15,7 @@ using LiteDB;
  * @Alphaair
  * 20191027 create.
  * 20210522 优化过期清理逻辑。
+ * 20251105 增加两个Find查找方法。
 **/
 
 namespace Yunzhi.Caching.Extensions.LiteDb
@@ -167,7 +168,7 @@ namespace Yunzhi.Caching.Extensions.LiteDb
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
-
+   
             _collection.Delete(key);
             this.CleanAsync();
         }
@@ -199,6 +200,24 @@ namespace Yunzhi.Caching.Extensions.LiteDb
             return _collection.Count();
         }
 
+        /// <summary>
+        /// 查找缓存的所有缓存条目
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<LiteCacheItem> Find()
+        {
+            return _collection.FindAll();
+        }
+
+        /// <summary>
+        /// 搜索缓存内的缓存条目
+        /// </summary>
+        /// <param name="predicate">过滤条件</param>
+        /// <returns></returns>
+        public IEnumerable<LiteCacheItem> Find(Expression<Func<LiteCacheItem,bool>> predicate)
+        {
+            return _collection.Find(predicate);
+        }
         #endregion
     }
 }

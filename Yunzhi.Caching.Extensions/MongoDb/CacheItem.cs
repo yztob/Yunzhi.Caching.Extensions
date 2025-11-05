@@ -11,6 +11,7 @@ using Yunzhi.NoSql;
  *       
  * @Alphaair
  * 20200211 create.
+ * 20251105 公开访问，替换时间序列化。
 **/
 
 namespace Yunzhi.Caching.Extensions.MongoDb
@@ -18,11 +19,9 @@ namespace Yunzhi.Caching.Extensions.MongoDb
     /// <summary>
     /// 表示一个缓存项目
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    internal class CacheItem
+    public class CacheItem
     {
         #region 私有成员
-        private DateTimeStorage _dateStorage = null;
         private TimeSpan? _expired = null;
         #endregion
 
@@ -62,22 +61,7 @@ namespace Yunzhi.Caching.Extensions.MongoDb
         /// <summary>
         /// 获取或者设置缓存项到期时间。
         /// </summary>
-        public DateTime? ExpiredTime
-        {
-            get
-            {
-                return _dateStorage.GetNullable(nameof(ExpiredTime));
-            }
-
-            set
-            {
-                //奇怪的会先于构造方法触发，疑似因为bson反列化的原因
-                if (_dateStorage == null)
-                    _dateStorage = new DateTimeStorage();
-
-                _dateStorage.Storage(nameof(ExpiredTime), value);
-            }
-        }
+        public DateTime? ExpiredTime { set; get; }
 
         /// <summary>
         /// 获取或设置当前缓存项是否自动顺延过期时间。
@@ -93,7 +77,6 @@ namespace Yunzhi.Caching.Extensions.MongoDb
         public CacheItem(string key)
         {
             this.Key = key;
-            _dateStorage = new DateTimeStorage();
         }
         #endregion
 

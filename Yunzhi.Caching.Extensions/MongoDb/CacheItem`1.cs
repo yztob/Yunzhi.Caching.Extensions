@@ -10,6 +10,7 @@ using Yunzhi.Caching;
  *       
  * @Alphaair
  * 20200211 create.
+ * 20251105 开放访问。
 **/
 
 namespace Yunzhi.Caching.Extensions.MongoDb
@@ -17,8 +18,8 @@ namespace Yunzhi.Caching.Extensions.MongoDb
     /// <summary>
     /// 泛型缓存项目
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    internal class CacheItem<T> : CacheItem
+    /// <typeparam name="T">缓存值的类型</typeparam>
+    public class CacheItem<T> : CacheItem
     {
 
         /// <summary>
