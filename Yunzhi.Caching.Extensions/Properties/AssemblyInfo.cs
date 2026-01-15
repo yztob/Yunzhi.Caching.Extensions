@@ -14,8 +14,8 @@ using System.Reflection;
 [assembly: AssemblyTitleAttribute("Yunzhi.Caching.Extensions")]
 [assembly: AssemblyProductAttribute("Yunzhi.Caching.Extensions")]
 [assembly: AssemblyCompanyAttribute("赣州云智科技有限责任公司")]
-[assembly: AssemblyDescriptionAttribute("一个基于LiteDB的数据缓存提供程序，可以同一主机内跨进程共享数据。")]
-[assembly: AssemblyCopyright("© 赣州云智科技有限责任公司 2019-2021")]
+[assembly: AssemblyDescriptionAttribute("基于LiteDB同一主机内跨进程共享、基于MongoDb的集群共享，数据缓存提供程序。")]
+[assembly: AssemblyCopyright("© 赣州云智科技有限责任公司 2019-2026")]
 [assembly: AssemblyVersionAttribute("1.0.*")]
 [assembly: AssemblyInformationalVersionAttribute("beta2")]
 

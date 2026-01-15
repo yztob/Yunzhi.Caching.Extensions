@@ -20,6 +20,7 @@ using MongoDB.Bson.Serialization;
  * 20200211 create.
  * 20210522 优化过期清理逻辑。
  * 20251105 增加Find方法。
+ * 20260115 修复TimeSpan.Zero永久有效设置无效的问题。
 **/
 
 namespace Yunzhi.Caching.Extensions.MongoDb

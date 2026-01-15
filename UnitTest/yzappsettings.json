@@ -1,6 +1,6 @@
 ﻿{
     "connectionStrings": {
-        "cache_mongodb": "mongodb://192.168.5.11/yztob_saas_cache"
+        "cache_mongodb": "mongodb://192.168.5.9/yztob_saas_cache"
     },
     "yunzhi": {
         "cache": {

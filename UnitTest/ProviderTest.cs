@@ -76,6 +76,7 @@ namespace UnitTest
             dec = cache.Get<decimal>("decimal");
             Assert.AreEqual(dec, 0);
 
+            cache.Set<DateTime>("datetime", DateTime.Now, TimeSpan.Zero);
             cache.Set<string>("text", text);
             cache.Set<int>("number", num);
             cache.Set<decimal>("decimal", dec, 5);

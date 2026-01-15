@@ -90,10 +90,11 @@ namespace Yunzhi.Caching.Extensions.MongoDb
         {
             this.Expired = expired;
 
-            if (expired.HasValue)
-                this.ExpiredTime = DateTime.Now.Add(expired.Value);
-            else if (expired == TimeSpan.Zero)            //永久有效
+            //永久有效
+            if (expired == TimeSpan.Zero)           
                 this.ExpiredTime = DateTime.Now.AddYears(100);
+            else if (expired.HasValue)
+                this.ExpiredTime = DateTime.Now.Add(expired.Value);
             else
                 this.ExpiredTime = null;
 
