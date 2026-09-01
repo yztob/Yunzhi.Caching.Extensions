@@ -21,6 +21,7 @@ using MongoDB.Bson.Serialization;
  * 20210522 优化过期清理逻辑。
  * 20251105 增加Find方法。
  * 20260115 修复TimeSpan.Zero永久有效设置无效的问题。
+ * 20260831 修复Set<T>写入存在并发的问题。
 **/
 
 namespace Yunzhi.Caching.Extensions.MongoDb
@@ -208,10 +209,10 @@ namespace Yunzhi.Caching.Extensions.MongoDb
             item.SetExpired(expired);
 
             var coll = this.GetCollection<T>();
-            if (this.Exists(key))
-                coll.Update(item, x => x.Key == key);
-            else
-                coll.Insert(item);
+            coll.Collection.ReplaceOne(x => x.Key == key, item, new ReplaceOptions()
+            {
+                IsUpsert = true
+            });
         }
 
         /// <summary>

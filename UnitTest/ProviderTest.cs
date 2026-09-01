@@ -11,6 +11,7 @@ using Yunzhi.Caching;
 using Yunzhi.Logging;
 using Yunzhi.Caching.Extensions.LiteDb;
 using UnitTest.Models;
+using System.Threading.Tasks;
 
 /*
  * 提供程序单元测试
@@ -77,14 +78,24 @@ namespace UnitTest
             Assert.AreEqual(dec, 0);
 
             cache.Set<DateTime>("datetime", DateTime.Now, TimeSpan.Zero);
-            cache.Set<string>("text", text);
+            //cache.Set<string>("text", text);
             cache.Set<int>("number", num);
             cache.Set<decimal>("decimal", dec, 5);
             cache.Set<bool>("flag", flag);
             cache.Set<User>("user", obj);
 
-            val = cache.Get<string>("text");
-            Assert.AreEqual(val, text);
+            //并发测试
+            Task.Run(() => {
+                cache.Set<string>("text", "none");
+            });
+            Task.Run(() => {
+                cache.Set<string>("text", "none-1");
+            });
+            Task.Run(() => {
+                cache.Set<string>("text", text, 30);
+                val = cache.Get<string>("text");
+                Assert.AreEqual(val, text);
+            });
 
             user = cache.Get<User>("user");
             Assert.AreEqual(user.Id, obj.Id);

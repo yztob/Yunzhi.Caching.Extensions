@@ -17,7 +17,7 @@ using System.Reflection;
 [assembly: AssemblyDescriptionAttribute("基于LiteDB同一主机内跨进程共享、基于MongoDb的集群共享，数据缓存提供程序。")]
 [assembly: AssemblyCopyright("© 赣州云智科技有限责任公司 2019-2026")]
 [assembly: AssemblyVersionAttribute("1.0.*")]
-[assembly: AssemblyInformationalVersionAttribute("beta2")]
+[assembly: AssemblyInformationalVersionAttribute("RC1")]
 
 // 由 MSBuild WriteCodeFragment 类生成。
 
